@@ -64,5 +64,11 @@ class Fundamentals():
         try:
             if self.service == 'overview':
                 print(data)
+            elif self.service == 'dividends' or self.service == 'splits':
+                print(data['data'])
+            elif self.service == 'income_statement' or self.service == 'balance_sheet' or self.service == 'cash_flow':
+                print(data['annualReports'], ' ///===/// ', data['quarterlyReports'])
+            elif self.service == 'earnings':
+                print(data['annualEarnings'], ' ///===/// ', data['quarterlyEarnings'])
         except Exception as e:
             print(f'Error transforming data: {e}')
