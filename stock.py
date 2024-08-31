@@ -1,5 +1,7 @@
 import requests
 
+import pandas as pd
+
 class Fundamentals():
     def __init__(self, service, symbol, apikey) -> None:
         self.__service = service
@@ -63,12 +65,22 @@ class Fundamentals():
         '''
         try:
             if self.service == 'overview':
-                print(data)
+                df = pd.DataFrame.from_dict(data, orient='index')
             elif self.service == 'dividends' or self.service == 'splits':
-                print(data['data'])
+                df = pd.DataFrame(data['data'])
             elif self.service == 'income_statement' or self.service == 'balance_sheet' or self.service == 'cash_flow':
-                print(data['annualReports'], ' ///===/// ', data['quarterlyReports'])
+                df_annual = pd.DataFrame(data['annualReports'])
+                df_quarterly = pd.DataFrame(data['quarterlyReports'])
+                
+                df_annual.to_excel('prueba_anual.xlsx')
+                df_quarterly.to_excel('prueba_cuatrimestral.xlsx')
             elif self.service == 'earnings':
-                print(data['annualEarnings'], ' ///===/// ', data['quarterlyEarnings'])
+                df_annual = pd.DataFrame(data['annualEarnings'])
+                df_quarterly = pd.DataFrame(data['quarterlyEarnings'])
+                
+                df_annual.to_excel('prueba_anual.xlsx')
+                df_quarterly.to_excel('prueba_cuatrimestral.xlsx')
+
+            df.to_excel('prueba.xlsx')
         except Exception as e:
             print(f'Error transforming data: {e}')
