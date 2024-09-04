@@ -47,6 +47,11 @@ class Fundamentals():
             print('The apikey must be an int value')
 
             return None
+        
+    def sheets_to_excel(self, data: pd.DataFrame):
+        with pd.ExcelWriter('prueba.xlsx') as writer:
+            data[0].to_excel(writer, sheet_name='Annual') 
+            data[1].to_excel(writer, sheet_name='Quarterly')
 
     def get_fundamentals(self):
         try:
@@ -66,21 +71,21 @@ class Fundamentals():
         try:
             if self.service == 'overview':
                 df = pd.DataFrame.from_dict(data, orient='index')
-            elif self.service == 'dividends' or self.service == 'splits':
+
+                df.to_excel('prueba.xlsx')
+            elif self.service in ['dividends', 'splits']:
                 df = pd.DataFrame(data['data'])
-            elif self.service == 'income_statement' or self.service == 'balance_sheet' or self.service == 'cash_flow':
+                
+                df.to_excel('prueba.xlsx')
+            elif self.service in ['income_statement', 'balance_sheet', 'cash_flow']:  
                 df_annual = pd.DataFrame(data['annualReports'])
                 df_quarterly = pd.DataFrame(data['quarterlyReports'])
                 
-                df_annual.to_excel('prueba_anual.xlsx')
-                df_quarterly.to_excel('prueba_cuatrimestral.xlsx')
+                self.sheets_to_excel([df_annual, df_quarterly])
             elif self.service == 'earnings':
                 df_annual = pd.DataFrame(data['annualEarnings'])
                 df_quarterly = pd.DataFrame(data['quarterlyEarnings'])
                 
-                df_annual.to_excel('prueba_anual.xlsx')
-                df_quarterly.to_excel('prueba_cuatrimestral.xlsx')
-
-            df.to_excel('prueba.xlsx')
+                self.sheets_to_excel([df_annual, df_quarterly])
         except Exception as e:
             print(f'Error transforming data: {e}')
