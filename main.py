@@ -39,7 +39,6 @@ class Viewer:
                 symbol = self.ticker.get()
                 api_key = self.apikey.get()
                 
-                print(service, symbol, api_key)
                 asset = Fundamentals(service, symbol, api_key)
                 asset.get_fundamentals()
 
