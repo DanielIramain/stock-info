@@ -1,5 +1,7 @@
 from tkinter import Tk, ttk
 
+from stock import Fundamentals
+
 #GUI
 class Viewer:
         def __init__(self, master) -> None:
@@ -31,11 +33,8 @@ class Viewer:
         
         def capture_data(self):
                 '''
-                Se encarga de capturar los datos mostrados a través de la GUI para ser usados en los métodos
-                Luego llama a las funciones que corresponden
+                Captures the input in the GUI and calls the method to get the data
                 '''
-                from stock import Fundamentals
-
                 service = self.combo.get()
                 symbol = self.ticker.get()
                 api_key = self.apikey.get()
