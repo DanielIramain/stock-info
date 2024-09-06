@@ -9,12 +9,15 @@ class Viewer:
                 
                 master.title('Stock Information')
 
+                self.label_service = ttk.Label(master, text='Choose service').pack(side='top')
                 self.combo = ttk.Combobox(master, state='readonly', 
                      values=['overview', 
                              'income_statement', 
                              'balance_sheet', 
                              'cash_flow',
-                             'earnings'])
+                             'earnings', 
+                             'dividends',
+                             'splits'])
                 self.combo.pack()
 
                 self.label_ticker = ttk.Label(master, text='Enter ticker').pack(side='top')
