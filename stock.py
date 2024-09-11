@@ -87,5 +87,9 @@ class Fundamentals():
                 df_quarterly = pd.DataFrame(data['quarterlyEarnings'])
                 
                 self.sheets_to_excel([df_annual, df_quarterly])
+            elif self.service == 'etf_profile':
+                df = pd.DataFrame.from_dict(data, orient='index')
+
+                df.to_excel('prueba.xlsx')
         except Exception as e:
             print(f'Error transforming data: {e}')

@@ -17,7 +17,8 @@ class Viewer:
                              'cash_flow',
                              'earnings', 
                              'dividends',
-                             'splits'])
+                             'splits',
+                             'etf_profile'])
                 self.combo.pack()
 
                 self.label_ticker = ttk.Label(master, text='Enter ticker').pack(side='top')
