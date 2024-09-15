@@ -15,3 +15,6 @@ Se debe reclamar la free API key en [el servicio de Alpha Vantage](https://www.a
 1. Servicio a utilizar (información requerida)
 2. Ticker (acción o ETF)
 3. API key obtenida
+   
+## Restricciones a su uso
+De acuerdo con la documentación del servicio de Alpha Vantage, en su versión gratuita se permiten hasta 25 API calls por día para obtener la información requerida. 
