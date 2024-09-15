@@ -2,7 +2,8 @@ import requests
 
 import pandas as pd
 
-class Fundamentals():
+class Information():
+    ''' Manage the data request '''
     def __init__(self, service, symbol, apikey) -> None:
         self.__service = service
         self.__symbol = self.validate_symbol(symbol)
@@ -47,24 +48,33 @@ class Fundamentals():
             print('The apikey must be an int value')
 
             return None
-        
+
     def sheets_to_excel(self, data: pd.DataFrame):
-        with pd.ExcelWriter('prueba.xlsx') as writer:
+        with pd.ExcelWriter('data.xlsx') as writer:
             data[0].to_excel(writer, sheet_name='Annual') 
             data[1].to_excel(writer, sheet_name='Quarterly')
 
-    def get_fundamentals(self):
+    def request_information(self, url:str):
         try:
-            url = f'https://www.alphavantage.co/query?function={self.service}&symbol={self.symbol}&apikey={self.apikey}'
-
             request = requests.get(url)
             data = request.json()
-
             self.transform_data(data)
         except Exception as e:
             print(f'Error at getting fundamentals: {e}')
+    
+    def get_data(self):
+        try:
+            url = f'https://www.alphavantage.co/query?function={self.service}&symbol={self.symbol}&apikey={self.apikey}'
+            self.request_information(url)
+        except Exception as e:
+            print(f'Error in request: {e}')
 
-    def transform_data(self, data):
+class Fundamentals(Information):
+    ''' Obtain the fundamental information of a company '''
+    def __init__(self, service, symbol, apikey) -> None:
+        super().__init__(service, symbol, apikey)
+
+    def transform_data(self, data: dict):
         '''
         Transforms data depending on the service in the solicitude
         '''
@@ -72,11 +82,11 @@ class Fundamentals():
             if self.service == 'overview':
                 df = pd.DataFrame.from_dict(data, orient='index')
 
-                df.to_excel('prueba.xlsx')
+                df.to_excel('data.xlsx')
             elif self.service in ['dividends', 'splits']:
                 df = pd.DataFrame(data['data'])
                 
-                df.to_excel('prueba.xlsx')
+                df.to_excel('data.xlsx')
             elif self.service in ['income_statement', 'balance_sheet', 'cash_flow']:  
                 df_annual = pd.DataFrame(data['annualReports'])
                 df_quarterly = pd.DataFrame(data['quarterlyReports'])
@@ -90,6 +100,6 @@ class Fundamentals():
             elif self.service == 'etf_profile':
                 df = pd.DataFrame.from_dict(data, orient='index')
 
-                df.to_excel('prueba.xlsx')
+                df.to_excel('data.xlsx')
         except Exception as e:
             print(f'Error transforming data: {e}')

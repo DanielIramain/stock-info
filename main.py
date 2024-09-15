@@ -18,7 +18,8 @@ class Viewer:
                              'earnings', 
                              'dividends',
                              'splits',
-                             'etf_profile'])
+                             'etf_profile'
+                             ])
                 self.combo.pack()
 
                 self.label_ticker = ttk.Label(master, text='Enter ticker').pack(side='top')
@@ -44,7 +45,7 @@ class Viewer:
                 api_key = self.apikey.get()
                 
                 asset = Fundamentals(service, symbol, api_key)
-                asset.get_fundamentals()
+                asset.get_data()
 
 if __name__ == '__main__':
     root = Tk()
