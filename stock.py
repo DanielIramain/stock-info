@@ -4,7 +4,7 @@ import pandas as pd
 
 class Information():
     ''' Manage the data request '''
-    def __init__(self, service, symbol, apikey) -> None:
+    def __init__(self, service:str, symbol:str, apikey:int) -> None:
         self.__service = service
         self.__symbol = self.validate_symbol(symbol)
         self.__apikey = self.validate_apikey(apikey)
@@ -29,7 +29,7 @@ class Information():
     def apikey(self, new_apikey):
         self.__apikey = self.validate_apikey(new_apikey)
 
-    def validate_symbol(self, symbol):
+    def validate_symbol(self, symbol: str) -> str:
         try:
             new_symbol = str(symbol)
 
@@ -39,7 +39,7 @@ class Information():
 
             return new_symbol
     
-    def validate_apikey(self, apikey):
+    def validate_apikey(self, apikey: int) -> int:
         try:
             new_apikey = int(apikey)
 
