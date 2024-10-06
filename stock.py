@@ -70,7 +70,7 @@ class Information():
             print(f'Error in request: {e}')
 
 class Fundamentals(Information):
-    ''' Obtain the fundamental information of a company '''
+    ''' Get the fundamental information of a company '''
     def __init__(self, service, symbol, apikey) -> None:
         super().__init__(service, symbol, apikey)
 
@@ -99,6 +99,54 @@ class Fundamentals(Information):
                 self.sheets_to_excel([df_annual, df_quarterly])
             elif self.service == 'etf_profile':
                 df = pd.DataFrame.from_dict(data, orient='index')
+
+                df.to_excel('data.xlsx')
+        except Exception as e:
+            print(f'Error transforming data: {e}')
+
+class TimeSeries(Information):
+    '''
+    Get time series of the company
+    '''
+    def __init__(self, service: str, symbol: str, apikey: int, interval: str) -> None:
+        super().__init__(service, symbol, apikey)
+        self.__interval = self.validate_interval(interval)
+
+    @property
+    def interval(self):
+        return self.__interval
+    
+    @interval.setter
+    def interval(self, new_interval):
+        self.__interval = self.validate_interval(new_interval)
+
+    def validate_interval(self, interval):
+        try:
+            if type(interval) != str:
+                print('Interval must be a str')
+
+                return None
+            else:
+                return interval
+        except ValueError:
+            print('Invalid interval')
+
+            return None
+
+    def get_data(self):
+        try:
+            url = f'https://www.alphavantage.co/query?function={self.service}&symbol={self.symbol}&interval={self.interval}&apikey={self.apikey}'
+            self.request_information(url)
+        except Exception as e:
+            print(f'Error in request: {e}')
+    
+    def transform_data(self, data: dict):
+        '''
+        Transforms data depending on the service in the solicitude
+        '''
+        try:
+            if self.service == 'time_series_intraday':
+                df = pd.DataFrame.from_dict(data['Time Series (5min)'], orient='index')
 
                 df.to_excel('data.xlsx')
         except Exception as e:

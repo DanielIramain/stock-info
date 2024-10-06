@@ -1,6 +1,6 @@
 from tkinter import Tk, ttk, StringVar
 
-from stock import Fundamentals
+from stock import Fundamentals, TimeSeries
 
 #GUI
 class Viewer:
@@ -17,7 +17,7 @@ class Viewer:
                                             'earnings',
                                             'dividends',
                                             'splits',
-                                            'etf_profile'], 'B': [4, 5, 6]}
+                                            'etf_profile'], 'Time Series': ['time_series_intraday', 5, 6]}
                 
                 ### Combobox 1
                 self.cb1_values = list(self.options.keys())
@@ -31,12 +31,17 @@ class Viewer:
                 self.cb2_var = StringVar()
                 self.cb2_var.set(self.options[self.cb1_values[0]][0])
                 self.cb2 = ttk.Combobox(master, values=self.options[self.cb1_values[0]], textvariable=self.cb2_var)
-                self.cb2.pack(side='bottom')
+                self.cb2.pack(side='top')
 
                 ### Ticker entry
                 self.label_ticker = ttk.Label(master, text='Enter ticker').pack(side='top')
                 self.ticker = ttk.Entry(master)
                 self.ticker.pack()
+
+                ### Interval entry
+                self.label_interval = ttk.Label(master, text='Enter interval').pack(side='top')
+                self.interval = ttk.Entry(master)
+                self.interval.pack()
 
                 ### API Key entry
                 self.label_key = ttk.Label(master, text='Enter API KEY').pack(side='top')
@@ -63,11 +68,16 @@ class Viewer:
                 '''
                 service = self.cb2.get()
                 symbol = self.ticker.get()
+                interval = self.interval.get()
                 api_key = self.apikey.get()
-                
-                asset = Fundamentals(service, symbol, api_key)
-                asset.get_data()
 
+                if service in self.options['Fundamentals']:
+                        asset = Fundamentals(service, symbol, api_key)
+                        asset.get_data()
+                elif service in self.options['Time Series']:
+                        asset = TimeSeries(service, symbol, api_key, interval)
+                        asset.get_data()
+                       
 if __name__ == '__main__':
     root = Tk()
     my_gui = Viewer(root)
