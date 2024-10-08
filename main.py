@@ -9,7 +9,6 @@ class Viewer:
                 
                 master.title('Stock Information')
 
-                self.label_service = ttk.Label(master, text='Choose service').pack(side='top')
                 self.options = {'Fundamentals': ['overview',
                                             'income_statement', 
                                             'balance_sheet',
@@ -17,9 +16,12 @@ class Viewer:
                                             'earnings',
                                             'dividends',
                                             'splits',
-                                            'etf_profile'], 'Time Series': ['time_series_intraday', 5, 6]}
+                                            'etf_profile'], 'Time Series': ['time_series_intraday', 
+                                                                            'time_series_daily', 6]}
+                self.intervals = ['1min', '5min', '15min', '30min', '60min']
                 
-                ### Combobox 1
+                ### Option combobox
+                self.label_service = ttk.Label(master, text='Choose service').pack(side='top')
                 self.cb1_values = list(self.options.keys())
                 self.cb1_var = StringVar()
                 self.cb1_var.set(self.cb1_values[0])
@@ -27,7 +29,7 @@ class Viewer:
                 self.cb1.pack(side='top')
                 self.cb1.bind('<<ComboboxSelected>>', self.get_var_cb)
 
-                ### Combobox 2
+                ### Service combobox
                 self.cb2_var = StringVar()
                 self.cb2_var.set(self.options[self.cb1_values[0]][0])
                 self.cb2 = ttk.Combobox(master, values=self.options[self.cb1_values[0]], textvariable=self.cb2_var)
@@ -38,9 +40,9 @@ class Viewer:
                 self.ticker = ttk.Entry(master)
                 self.ticker.pack()
 
-                ### Interval entry
+                ### Interval combobox
                 self.label_interval = ttk.Label(master, text='Enter interval').pack(side='top')
-                self.interval = ttk.Entry(master)
+                self.interval = ttk.Combobox(master, values=self.intervals)
                 self.interval.pack()
 
                 ### API Key entry
@@ -75,8 +77,12 @@ class Viewer:
                         asset = Fundamentals(service, symbol, api_key)
                         asset.get_data()
                 elif service in self.options['Time Series']:
-                        asset = TimeSeries(service, symbol, api_key, interval)
-                        asset.get_data()
+                        if service == 'time_series_intraday':
+                                asset = TimeSeries(service, symbol, api_key, interval)
+                                asset.get_data_per_interval()
+                        else:
+                                asset = TimeSeries(service, symbol, api_key, interval)
+                                asset.get_data()
                        
 if __name__ == '__main__':
     root = Tk()

@@ -133,7 +133,7 @@ class TimeSeries(Information):
 
             return None
 
-    def get_data(self):
+    def get_data_per_interval(self):
         try:
             url = f'https://www.alphavantage.co/query?function={self.service}&symbol={self.symbol}&interval={self.interval}&apikey={self.apikey}'
             self.request_information(url)
@@ -145,9 +145,10 @@ class TimeSeries(Information):
         Transforms data depending on the service in the solicitude
         '''
         try:
-            if self.service == 'time_series_intraday':
-                df = pd.DataFrame.from_dict(data['Time Series (5min)'], orient='index')
+            if self.service == 'time_series_intraday' or self.service == 'time_series_daily':
+                data_keys = list(data.keys())
+                df = pd.DataFrame.from_dict(data[data_keys[1]], orient='index')
 
                 df.to_excel('data.xlsx')
         except Exception as e:
-            print(f'Error transforming data: {e}')
+            print(f'Error transforming time series data: {e}')
