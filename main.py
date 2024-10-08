@@ -17,7 +17,13 @@ class Viewer:
                                             'dividends',
                                             'splits',
                                             'etf_profile'], 'Time Series': ['time_series_intraday', 
-                                                                            'time_series_daily', 6]}
+                                            'time_series_daily', 
+                                            'time_series_daily_adjusted',
+                                            'time_series_weekly',
+                                            'time_series_weekly_adjusted',
+                                            'time_series_monthly',
+                                            'time_series_monthly_adjusted',
+                                            'global_quote']}
                 self.intervals = ['1min', '5min', '15min', '30min', '60min']
                 
                 ### Option combobox

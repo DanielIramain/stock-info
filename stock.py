@@ -145,7 +145,16 @@ class TimeSeries(Information):
         Transforms data depending on the service in the solicitude
         '''
         try:
-            if self.service == 'time_series_intraday' or self.service == 'time_series_daily':
+            services = ['time_series_intraday', 
+                    'time_series_daily', 
+                    'time_series_daily_adjusted',
+                    'time_series_weekly',
+                    'time_series_weekly_adjusted',
+                    'time_series_monthly',
+                    'time_series_monthly_adjusted',
+                    'global_quote']
+            
+            if self.service in services:
                 data_keys = list(data.keys())
                 df = pd.DataFrame.from_dict(data[data_keys[1]], orient='index')
 
