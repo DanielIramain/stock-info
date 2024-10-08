@@ -4,7 +4,7 @@ import pandas as pd
 
 class Information():
     ''' Manage the data request '''
-    def __init__(self, service, symbol, apikey) -> None:
+    def __init__(self, service:str, symbol:str, apikey:int) -> None:
         self.__service = service
         self.__symbol = self.validate_symbol(symbol)
         self.__apikey = self.validate_apikey(apikey)
@@ -29,7 +29,7 @@ class Information():
     def apikey(self, new_apikey):
         self.__apikey = self.validate_apikey(new_apikey)
 
-    def validate_symbol(self, symbol):
+    def validate_symbol(self, symbol: str) -> str:
         try:
             new_symbol = str(symbol)
 
@@ -39,7 +39,7 @@ class Information():
 
             return new_symbol
     
-    def validate_apikey(self, apikey):
+    def validate_apikey(self, apikey: int) -> int:
         try:
             new_apikey = int(apikey)
 
@@ -70,7 +70,7 @@ class Information():
             print(f'Error in request: {e}')
 
 class Fundamentals(Information):
-    ''' Obtain the fundamental information of a company '''
+    ''' Get the fundamental information of a company '''
     def __init__(self, service, symbol, apikey) -> None:
         super().__init__(service, symbol, apikey)
 
@@ -103,3 +103,61 @@ class Fundamentals(Information):
                 df.to_excel('data.xlsx')
         except Exception as e:
             print(f'Error transforming data: {e}')
+
+class TimeSeries(Information):
+    '''
+    Get time series of the company
+    '''
+    def __init__(self, service: str, symbol: str, apikey: int, interval: str) -> None:
+        super().__init__(service, symbol, apikey)
+        self.__interval = self.validate_interval(interval)
+
+    @property
+    def interval(self):
+        return self.__interval
+    
+    @interval.setter
+    def interval(self, new_interval):
+        self.__interval = self.validate_interval(new_interval)
+
+    def validate_interval(self, interval):
+        try:
+            if type(interval) != str:
+                print('Interval must be a str')
+
+                return None
+            else:
+                return interval
+        except ValueError:
+            print('Invalid interval')
+
+            return None
+
+    def get_data_per_interval(self):
+        try:
+            url = f'https://www.alphavantage.co/query?function={self.service}&symbol={self.symbol}&interval={self.interval}&apikey={self.apikey}'
+            self.request_information(url)
+        except Exception as e:
+            print(f'Error in request: {e}')
+    
+    def transform_data(self, data: dict):
+        '''
+        Transforms data depending on the service in the solicitude
+        '''
+        try:
+            services = ['time_series_intraday', 
+                    'time_series_daily', 
+                    'time_series_daily_adjusted',
+                    'time_series_weekly',
+                    'time_series_weekly_adjusted',
+                    'time_series_monthly',
+                    'time_series_monthly_adjusted',
+                    'global_quote']
+            
+            if self.service in services:
+                data_keys = list(data.keys())
+                df = pd.DataFrame.from_dict(data[data_keys[1]], orient='index')
+
+                df.to_excel('data.xlsx')
+        except Exception as e:
+            print(f'Error transforming time series data: {e}')
