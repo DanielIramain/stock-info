@@ -1,4 +1,5 @@
 import requests
+from tkinter.filedialog import asksaveasfile 
 
 import pandas as pd
 
@@ -50,9 +51,12 @@ class Information():
             return None
 
     def sheets_to_excel(self, data: pd.DataFrame):
-        with pd.ExcelWriter('data.xlsx') as writer:
-            data[0].to_excel(writer, sheet_name='Annual') 
-            data[1].to_excel(writer, sheet_name='Quarterly')
+        try:
+            with asksaveasfile(mode='w', defaultextension='.xlsx') as file:
+                data[0].to_excel(file.name, sheet_name='Annual') 
+                data[1].to_excel(file.name, sheet_name='Quarterly')
+        except AttributeError:
+            print('User canceled')
 
     def request_information(self, url:str):
         try:
@@ -82,11 +86,13 @@ class Fundamentals(Information):
             if self.service == 'overview':
                 df = pd.DataFrame.from_dict(data, orient='index')
 
-                df.to_excel('data.xlsx')
+                with asksaveasfile(mode='w', defaultextension='.xlsx') as file:
+                    df.to_excel(file.name)
             elif self.service in ['dividends', 'splits']:
                 df = pd.DataFrame(data['data'])
                 
-                df.to_excel('data.xlsx')
+                with asksaveasfile(mode='w', defaultextension='.xlsx') as file:
+                    df.to_excel(file.name)
             elif self.service in ['income_statement', 'balance_sheet', 'cash_flow']:  
                 df_annual = pd.DataFrame(data['annualReports'])
                 df_quarterly = pd.DataFrame(data['quarterlyReports'])
@@ -100,7 +106,8 @@ class Fundamentals(Information):
             elif self.service == 'etf_profile':
                 df = pd.DataFrame.from_dict(data, orient='index')
 
-                df.to_excel('data.xlsx')
+                with asksaveasfile(mode='w', defaultextension='.xlsx') as file:
+                    df.to_excel(file.name)
         except Exception as e:
             print(f'Error transforming data: {e}')
 
