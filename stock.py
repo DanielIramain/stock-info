@@ -161,10 +161,16 @@ class TimeSeries(Information):
                     'time_series_monthly_adjusted',
                     'global_quote']
             
-            if self.service in services:
+            if self.service in services[0:7]:
                 data_keys = list(data.keys())
                 df = pd.DataFrame.from_dict(data[data_keys[1]], orient='index')
 
-                df.to_excel('data.xlsx')
+                with asksaveasfile(mode='w', defaultextension='.xlsx') as file:
+                    df.to_excel(file.name)
+            elif self.service == 'global_quote':
+                df = pd.DataFrame(data)
+
+                with asksaveasfile(mode='w', defaultextension='.xlsx') as file:
+                    df.to_excel(file.name)
         except Exception as e:
             print(f'Error transforming time series data: {e}')
